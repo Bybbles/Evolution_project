@@ -142,6 +142,10 @@ def find_the_nearest_animal(bacteries=bacteries,  number_of_victim=number_of_vic
     distance = 0
     number_of_nearest_victim = None
     number_of_nearest_victim_for_now = None
+
+    nearest_victim_to_predator.clear()
+    nearest_victim_to_predator = [None] * len(predators)
+    i = 0
     for animal in predators:
         predator_for_now = animal
         print('predator_for_now - ', predator_for_now)
@@ -159,12 +163,9 @@ def find_the_nearest_animal(bacteries=bacteries,  number_of_victim=number_of_vic
 
             if (distance < nearest_victim_distance_for_now and animal != predator_for_now) or (distance == nearest_victim_distance_for_now and animal != predator_for_now):
                 nearest_victim_distance_for_now = distance
-                number_of_nearest_victim_for_now = number_of_animal
-            print(number_of_animal, how_much_animal)
-            # trying to find the end, and if that was the end, append number of nearest food for now
-            if number_of_animal == how_much_animal-1:
-                nearest_victim_to_predator.append(bacteries[number_of_nearest_victim_for_now])
-            number_of_animal = bacteries.index(animal)
+                nearest_victim_to_predator[i] = bacteries[number_of_animal]
+
+        i = i + 1
 
     print('nearest_victim_to_predator -', nearest_victim_to_predator)
     return nearest_victim_to_predator
@@ -252,7 +253,7 @@ while loop:
 
     how_much_food_to_append_copy = how_much_food_to_append_copy * 2
     find_the_nearest_food()
-    find_the_nearest_animal()
+    nearest_victim_to_predator = find_the_nearest_animal()
 
     pygame.draw.rect(window, BLUE, player)
     
@@ -282,6 +283,9 @@ while loop:
 
     for animal in predators:
         number_of_animal = predators.index(animal)
+        if nearest_victim_to_predator[number_of_animal] == None:
+            continue
+
         if nearest_victim_to_predator[number_of_animal].x < animal.x:
             animal.x -= speed[number_of_animal]
         if nearest_victim_to_predator[number_of_animal].x > animal.x:
