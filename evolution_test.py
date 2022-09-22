@@ -1,8 +1,8 @@
 # Start
-import pygame, time, random, math
+import pygame, random, math
 # import matplotlib
 import matplotlib.pyplot as plt
-import numpy as np
+
 figure, grafik = plt.subplots()  # Create a figure containing a single axes.
 
 # FPS
@@ -10,29 +10,29 @@ FPS = 100
 fpsClock = pygame.time.Clock()
 
 # important variable(food and animal, that you can change)
-how_much_food_to_append = 2
+how_much_food_to_append = 0.1
 how_much_animal_to_append = 3
 start_health = 79.9
 how_much_health_to_append = 10
 
 # variable and things like that
 speed = []
-predators = []
+#predators = []
 around_speed = 0
 around_speed_list = []
 grafik_x_food = []
 grafik_x_animal_blue = []
-grafik_x_animal_red =[]
+grafik_x_animal_red = []
 grafik_y_time = []
 pere = 0
 grafik_y_time_was = 0
 number_of_animal1 = 0
 type_of_animal = []
-predators_speed = []
-predators_health = []
+#predators_speed = []
+#predators_health = []
 pygame.init()
 save_FPS = FPS
-nearest_victim_to_predator = []
+#nearest_victim_to_predator = []
 number_of_victim = 0
 loop = True
 window = pygame.display.set_mode((1400, 800), 0, 32)
@@ -72,19 +72,19 @@ for animal in range(how_much_animal_to_append):
     speed.append(2)
     health.append(start_health)
 
-predators.append(pygame.Rect(random.randint(0, 1400), random.randint(0, 800), 20, 20))
-predators_speed.append(2)
-predators_health.append(start_health)
+#predators.append(pygame.Rect(random.randint(0, 1400), random.randint(0, 800), 20, 20))
+#predators_speed.append(2)
+#predators_health.append(start_health)
 
 # append start food
 if how_much_food_to_append > 1 or how_much_food_to_append == 1:
     for mat in range(how_much_food_to_append):
-            how_much_food += 1
-            food.append(pygame.Rect(random.randint(20, 1380), random.randint(20, 780), 15, 15))
+        how_much_food += 1
+        food.append(pygame.Rect(random.randint(20, 1380), random.randint(20, 780), 15, 15))
 else:
     for mat in range(2):
-            how_much_food += 1
-            food.append(pygame.Rect(random.randint(20, 1380), random.randint(20, 780), 15, 15))
+        how_much_food += 1
+        food.append(pygame.Rect(random.randint(20, 1380), random.randint(20, 780), 15, 15))
 
 # Colors
 BLACK = (0, 0, 0)
@@ -98,87 +98,55 @@ YELLOW = (255, 255, 0)
 window.fill(WHITE)
 pygame.display.update()
 
+
 # functions
-def find_the_nearest_food(number_of_animal = number_of_animal, number_of_food = number_of_food, distance = distance, nearest_food_distance_for_now = nearest_food_distance_for_now, number_of_nearest_food_for_now = number_of_nearest_food_for_now):
+def find_the_nearest_food(number_of_animal=number_of_animal, number_of_food=number_of_food, distance=distance,
+                          nearest_food_distance_for_now=nearest_food_distance_for_now,
+                          number_of_nearest_food_for_now=number_of_nearest_food_for_now):
     for animal in bacteries:
         number_of_animal += 1
         nearest_food_distance_for_now = 1000000000000000000000
         number_of_food = 0
         number_of_nearest_food_for_now = None
         distance = 0
-        
+
         for mat in food:
             number_of_food += 1
-            
+
             # food and animal coords
             food_x = mat.centerx
             food_y = mat.centery
             animal_x = animal.centerx
             animal_y = animal.centery
-            
+
             # find the distance between animal and food
             gep_y = animal_y - food_y
             gep_x = animal_x - food_x
             distance = math.sqrt((gep_y * gep_y + gep_x * gep_x))
-            
+
             # if that distance was less that previous smallest distance, change the smallest distance
             if distance < nearest_food_distance_for_now or distance == nearest_food_distance_for_now:
                 nearest_food_distance_for_now = distance
                 number_of_nearest_food_for_now = number_of_food
-                
+
             # trying to find the end, and if that was the end, append number of nearest food for now
             if number_of_food == how_much_food:
                 nearest_food_to_animal.append(food[number_of_nearest_food_for_now - 1])
-                         
+
     return nearest_food_to_animal
 
-def find_the_nearest_animal(bacteries=bacteries,  number_of_victim=number_of_victim, distance=distance,
-                          nearest_victim_distance_for_now=nearest_victim_distance_for_now,
-                          number_of_nearest_victim_for_now=number_of_nearest_victim_for_now, number_of_animal1=number_of_animal1, nearest_victim_to_predator=nearest_victim_to_predator):
 
-    nearest_victim_distance_for_now = 100000000000
-    number_of_animal = 0
-    predator_for_now = None
-    distance = 0
-    number_of_nearest_victim = None
-    number_of_nearest_victim_for_now = None
 
-    nearest_victim_to_predator.clear()
-    nearest_victim_to_predator = [None] * len(predators)
-    i = 0
-    for animal in predators:
-        predator_for_now = animal
-        print('predator_for_now - ', predator_for_now)
-        for animal in bacteries:
-            number_of_animal = bacteries.index(animal)
-            print('animal -', animal)
-            predator_x = predator_for_now.centerx
-            predator_y = predator_for_now.centery
-            victim_x = animal.centerx
-            victim_y = animal.centery
-
-            gep_y = predator_y - victim_y
-            gep_x = victim_x - victim_x
-            distance = math.sqrt((gep_y * gep_y + gep_x * gep_x))
-
-            if (distance < nearest_victim_distance_for_now and animal != predator_for_now) or (distance == nearest_victim_distance_for_now and animal != predator_for_now):
-                nearest_victim_distance_for_now = distance
-                nearest_victim_to_predator[i] = bacteries[number_of_animal]
-
-        i = i + 1
-
-    print('nearest_victim_to_predator -', nearest_victim_to_predator)
-    return nearest_victim_to_predator
 
 
 # Main Loop
 while loop:
-    nearest_victim_to_predator.clear()
+
     nearest_food_to_animal.clear()
     nearest_food_distance_for_now = 1000000000000000000000
     number_of_animal = 0
-    number_of_food = -1       
-    
+    number_of_food = -1
+
     # To go out
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -193,8 +161,8 @@ while loop:
 
     # Move player        
     pressed_keys = pygame.key.get_pressed()
-    
-    if pressed_keys[pygame.K_w] or pressed_keys[pygame.K_s] or pressed_keys[pygame.K_d] or pressed_keys[pygame.K_a]:    
+
+    if pressed_keys[pygame.K_w] or pressed_keys[pygame.K_s] or pressed_keys[pygame.K_d] or pressed_keys[pygame.K_a]:
         if pressed_keys[pygame.K_w]:
             player.y -= player_step
         if pressed_keys[pygame.K_s]:
@@ -239,13 +207,13 @@ while loop:
         speed.append(2)
         health.append(start_health)
         type_of_animal.append(0)
-            
+
     # Append food
     if how_much_food_to_append < 1 and how_much_food_to_append_copy == 1 or how_much_food_to_append_copy > 1:
         how_much_food += 1
         food.append(pygame.Rect(random.randint(20, 1380), random.randint(20, 780), 15, 15))
         how_much_food_to_append_copy = how_much_food_to_append
-    
+
     if how_much_food_to_append_copy > 1 or how_much_food_to_append_copy == 1:
         for mat in range(how_much_food_to_append):
             how_much_food += 1
@@ -253,20 +221,19 @@ while loop:
 
     how_much_food_to_append_copy = how_much_food_to_append_copy * 2
     find_the_nearest_food()
-    nearest_victim_to_predator = find_the_nearest_animal()
+
 
     pygame.draw.rect(window, BLUE, player)
-    
+
     for mat in food:
         if mat in nearest_food_to_animal:
             pygame.draw.rect(window, RED, mat)
         else:
             pygame.draw.rect(window, GREEN, mat)
-        
-        
+
     number_of_animal = 0
 
-# most things about animal - moving, minus health, touch the food, plus health  , new animals
+    # most things about animal - moving, minus health, touch the food, plus health  , new animals
     for animal in bacteries:
         # move the animal
         number_of_animal = bacteries.index(animal)
@@ -274,37 +241,20 @@ while loop:
             animal.x -= speed[number_of_animal]
         if nearest_food_to_animal[number_of_animal].x > animal.x:
             animal.x += speed[number_of_animal]
-            
+
         if nearest_food_to_animal[number_of_animal].y < animal.y:
             animal.y -= speed[number_of_animal]
         if nearest_food_to_animal[number_of_animal].y > animal.y:
             animal.y += speed[number_of_animal]
         number_of_animal = bacteries.index(animal)
 
-    for animal in predators:
-        number_of_animal = predators.index(animal)
-        if nearest_victim_to_predator[number_of_animal] == None:
-            continue
-
-        if nearest_victim_to_predator[number_of_animal].x < animal.x:
-            animal.x -= speed[number_of_animal]
-        if nearest_victim_to_predator[number_of_animal].x > animal.x:
-            animal.x += speed[number_of_animal]
-
-        if nearest_victim_to_predator[number_of_animal].y < animal.y:
-            animal.y -= speed[number_of_animal]
-        if nearest_victim_to_predator[number_of_animal].y > animal.y:
-            animal.y += speed[number_of_animal]
-        number_of_animal = predators.index(animal)
 
     number_of_animal = 0
-            
-        # minus health and dead
+
+    # minus health and dead
     for animal in bacteries:
-        if how_much_animal > 3:
-            health[number_of_animal] -= speed[number_of_animal]**2/9.5+1
-        if how_much_animal == 3 or how_much_animal < 3:
-            health[number_of_animal] -= speed[number_of_animal] ** 2 / 13
+
+        health[number_of_animal] -= speed[number_of_animal]/10+0.1
 
         if health[number_of_animal] < 0 or health[number_of_animal] == 0:
             how_much_animal -= 1
@@ -359,8 +309,6 @@ while loop:
                 else:
                     random_y = animal.y - 15
 
-                predators.append(pygame.Rect(random_x, random_y, animal.width, animal.height))
-                predators_health.append(start_health)
 
                 random_thing = random.randint(0, 1)
                 if random_thing == 0:
@@ -371,8 +319,7 @@ while loop:
 
         # Touch The Food and plus health
     number_of_animal = 0
-    
-    
+
     for mat in food:
         number_of_animal = 0
         if player.colliderect(mat) and mat in food:
@@ -389,30 +336,24 @@ while loop:
     # Draw animals
     number_of_animal = 0
     for animal in bacteries:
-        pygame.draw.rect(window, [0, 0, (255-speed[number_of_animal]*15)], animal)
-    for animal in predators:
-        pygame.draw.rect(window, [(255 - speed[number_of_animal] * 15), 0, 0], animal)
-
-
+        pygame.draw.rect(window, [0, 0, (255 - speed[number_of_animal] * 15)], animal)
 
 
     # append info to grafik
 
-    grafik_x_food.append(how_much_food/10)
+    grafik_x_food.append(how_much_food / 10)
 
     grafik_x_animal_blue.append(how_much_animal)
 
-    grafik_y_time_was =  grafik_y_time_was + 1
+    grafik_y_time_was = grafik_y_time_was + 1
     grafik_y_time.append(grafik_y_time_was)
 
-    around_speed = sum(speed)/len(speed)*10
+    around_speed = sum(speed) / len(speed) * 10
     around_speed_list.append(around_speed)
 
     pygame.display.update()
     window.fill(WHITE)
     fpsClock.tick(FPS)
-
-
 
             
        
